@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Loader2, Sparkles, Wand2, AlertCircle, UserRound, WalletCards, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Loader2, Sparkles, Wand2, AlertCircle, UserRound, WalletCards, ShieldCheck } from 'lucide-react';
 import PersonalInfo from './PersonalInfo';
 import FinancialInfo from './FinancialInfo';
 import CreditInfo from './CreditInfo';

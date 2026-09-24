@@ -13,6 +13,9 @@ export default defineConfig({
       '/predict': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
+        bypass: (req) => {
+          if (req.url === '/prediction' || req.url.startsWith('/prediction/')) return req.url;
+        },
       },
       '/dataset': {
         target: 'http://127.0.0.1:8000',
