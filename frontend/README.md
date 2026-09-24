@@ -1,4 +1,4 @@
-# Nimbus — Loan Default Prediction Dashboard
+# LoanLens — Loan Default Prediction Dashboard
 
 A premium, animation-first fintech dashboard for scoring loan default risk, built with
 React, Vite, Tailwind CSS, and Framer Motion.

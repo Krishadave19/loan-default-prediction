@@ -6,27 +6,27 @@ const COMPARISON_ROWS = [
   {
     dimension: 'Turnaround Latency',
     traditional: '3 to 5 business days of manual document gathering and review.',
-    nimbus: 'Sub-200ms real-time API inference and automated probability scoring.',
+    loanLens: 'Sub-200ms real-time API inference and automated probability scoring.',
   },
   {
     dimension: 'Data Dimensions Evaluated',
     traditional: 'Limited to static FICO score and a single debt-to-income metric.',
-    nimbus: '40+ cross-signal features including cash flow velocity and leverage cushions.',
+    loanLens: '40+ cross-signal features including cash flow velocity and leverage cushions.',
   },
   {
     dimension: 'Explainability & Compliance',
     traditional: 'Vague, subjective rejection reasons with zero quantified weights.',
-    nimbus: 'Granular mathematical SHAP values showing exact factor impact per applicant.',
+    loanLens: 'Granular mathematical SHAP values showing exact factor impact per applicant.',
   },
   {
     dimension: 'Predictive Accuracy',
     traditional: 'High false-positive rate (~68% precision) rejecting creditworthy borrowers.',
-    nimbus: '88.5% cross-validated ROC-AUC with calibrated risk distribution.',
+    loanLens: '88.5% cross-validated ROC-AUC with calibrated risk distribution.',
   },
   {
     dimension: 'Fair Lending & Bias Safeguards',
     traditional: 'Prone to unconscious cognitive human underwriter biases.',
-    nimbus: 'Continuous demographic parity monitoring and ECOA fairness audits.',
+    loanLens: 'Continuous demographic parity monitoring and ECOA fairness audits.',
   },
 ];
 
@@ -38,7 +38,7 @@ export default function ComparisonSection() {
           <Zap className="h-3.5 w-3.5" /> Performance Superiority
         </span>
         <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink-900 dark:text-white sm:text-5xl font-display">
-          Traditional Underwriting vs. Nimbus AI
+          Traditional Underwriting vs. LoanLens AI
         </h2>
         <p className="mt-4 text-base text-ink-700/75 dark:text-white/65 leading-relaxed">
           See why modern financial institutions are replacing legacy spreadsheets with machine learning.
@@ -55,7 +55,7 @@ export default function ComparisonSection() {
             <XCircle className="h-4 w-4" /> Traditional Manual Scoring
           </div>
           <div className="md:col-span-4 text-emerald-500 flex items-center gap-2 mt-2 md:mt-0">
-            <CheckCircle2 className="h-4 w-4" /> Nimbus Credit Intelligence
+            <CheckCircle2 className="h-4 w-4" /> LoanLens Credit Intelligence
           </div>
         </div>
 
@@ -79,7 +79,7 @@ export default function ComparisonSection() {
               </div>
               <div className="md:col-span-4 text-ink-900/90 dark:text-white/90 font-medium pl-0 md:pl-2 flex items-start gap-2">
                 <span className="text-emerald-500 font-bold hidden md:inline">✓</span>
-                <span>{row.nimbus}</span>
+                <span>{row.loanLens}</span>
               </div>
             </motion.div>
           ))}

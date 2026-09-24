@@ -16,7 +16,7 @@ const VALUES = [
   {
     icon: Rocket,
     title: 'Shipped, not just researched',
-    description: 'Nimbus is a production system serving live scoring traffic, not a notebook demo.',
+    description: 'LoanLens is a production system serving live scoring traffic, not a notebook demo.',
   },
 ];
 
@@ -24,9 +24,9 @@ export default function About() {
   return (
     <div className="pb-24">
       <PageHeader
-        eyebrow="About Nimbus"
+        eyebrow="About LoanLens"
         title="We think credit risk deserves better tools"
-        description="Nimbus started as an internal scoring tool for a mid-size lender frustrated with opaque, one-size-fits-all risk models. It's now the layer between raw applicant data and a decision your team can stand behind."
+        description="LoanLens started as an internal scoring tool for a mid-size lender frustrated with opaque, one-size-fits-all risk models. It's now the layer between raw applicant data and a decision your team can stand behind."
       />
 
       <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8">

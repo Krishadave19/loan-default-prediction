@@ -154,7 +154,7 @@ export default function Hero() {
           <div className="relative overflow-hidden w-full rounded-2xl bg-navy-950 aspect-[16/9] max-h-[520px]">
             <img
               src="/images/loan-risk-hero.jpg"
-              alt="Nimbus AI Credit Risk Intelligence Visualization"
+              alt="LoanLens AI Credit Risk Intelligence Visualization"
               className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
             />
             {/* Subtle Gradient Vignette Overlay */}

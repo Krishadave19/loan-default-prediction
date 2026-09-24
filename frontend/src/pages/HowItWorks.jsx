@@ -29,7 +29,7 @@ export default function HowItWorks() {
       <PageHeader
         eyebrow="How it works"
         title="A transparent path from application to decision"
-        description="Nimbus doesn't just return a number — it shows the reasoning, the data, and the checks behind every prediction."
+        description="LoanLens doesn't just return a number — it shows the reasoning, the data, and the checks behind every prediction."
       />
 
       <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">

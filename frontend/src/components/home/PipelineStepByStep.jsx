@@ -52,7 +52,7 @@ const PIPELINE_STEPS = [
     icon: Sparkles,
     badge: 'Transparency',
     color: 'from-purple-500 to-pink-500',
-    description: 'Black-box decisions are unacceptable in banking. Nimbus calculates exact Shapley Additive Explanations (SHAP) for every individual applicant.',
+    description: 'Black-box decisions are unacceptable in banking. LoanLens calculates exact Shapley Additive Explanations (SHAP) for every individual applicant.',
     highlights: [
       'Know the exact top 5 factors increasing or lowering risk',
       'Full compliance with Equal Credit Opportunity Act (ECOA)',
@@ -88,7 +88,7 @@ export default function PipelineStepByStep() {
           <Layers className="h-3.5 w-3.5" /> End-to-End Pipeline
         </span>
         <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink-900 dark:text-white sm:text-5xl font-display">
-          How Nimbus Evaluates Loan Risk in 5 Steps
+          How LoanLens Evaluates Loan Risk in 5 Steps
         </h2>
         <p className="mt-4 text-base text-ink-700/75 dark:text-white/65 leading-relaxed">
           From raw applicant submission to auditable, calibrated underwriter decision in less than 200 milliseconds.

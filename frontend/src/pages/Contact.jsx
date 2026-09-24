@@ -4,7 +4,7 @@ import { Mail, MapPin, Phone, Send, CheckCircle2 } from 'lucide-react';
 import PageHeader from '../components/common/PageHeader';
 
 const DETAILS = [
-  { icon: Mail, label: 'hello@nimbuscredit.io' },
+  { icon: Mail, label: 'hello@loanlens.io' },
   { icon: Phone, label: '+1 (555) 019-2044' },
   { icon: MapPin, label: 'Austin, Texas' },
 ];
@@ -22,7 +22,7 @@ export default function Contact() {
       <PageHeader
         eyebrow="Get in touch"
         title="Let's talk about your loan book"
-        description="Tell us about your portfolio and we'll walk you through how Nimbus calibrates to it."
+        description="Tell us about your portfolio and we'll walk you through how LoanLens calibrates to it."
       />
 
       <section className="mx-auto grid max-w-5xl grid-cols-1 gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1fr,1.3fr] lg:px-8">

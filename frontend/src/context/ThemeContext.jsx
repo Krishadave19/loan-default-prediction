@@ -4,7 +4,7 @@ const ThemeContext = createContext(null);
 
 function getInitialTheme() {
   if (typeof window === 'undefined') return 'dark';
-  const stored = window.localStorage.getItem('nimbus-theme');
+  const stored = window.localStorage.getItem('loanlens-theme');
   if (stored === 'light' || stored === 'dark') return stored;
   const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   return prefersDark ? 'dark' : 'light';
@@ -21,7 +21,7 @@ export function ThemeProvider({ children }) {
     } else {
       root.classList.remove('dark');
     }
-    window.localStorage.setItem('nimbus-theme', theme);
+    window.localStorage.setItem('loanlens-theme', theme);
   }, [theme]);
 
   const toggleTheme = useCallback(() => {

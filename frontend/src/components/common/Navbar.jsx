@@ -69,7 +69,7 @@ export default function Navbar() {
             N
           </span>
           <span className="font-display text-lg font-semibold tracking-tight text-ink-900 dark:text-white">
-            Nimbus
+            LoanLens
           </span>
         </Link>
 

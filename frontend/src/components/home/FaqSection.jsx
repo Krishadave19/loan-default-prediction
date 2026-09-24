@@ -6,10 +6,10 @@ const FAQS = [
   {
     question: 'How does default probability differ from a standard credit score?',
     answer:
-      'A credit score (like FICO) is a generic three-digit index measuring historical credit behavior across all debt types. In contrast, Nimbus predicts the exact mathematical probability (e.g. 14.2%) that a specific applicant will default on this specific loan term and amount, calibrated against recent macroeconomic conditions.',
+      'A credit score (like FICO) is a generic three-digit index measuring historical credit behavior across all debt types. In contrast, LoanLens predicts the exact mathematical probability (e.g. 14.2%) that a specific applicant will default on this specific loan term and amount, calibrated against recent macroeconomic conditions.',
   },
   {
-    question: 'How accurate is the Nimbus machine learning model?',
+    question: 'How accurate is the LoanLens machine learning model?',
     answer:
       'The production model achieves an 88.5% cross-validated ROC-AUC and 89.2% accuracy on our held-out test cohort of over 96,000 scored loans. Most importantly, the model is probability-calibrated using isotonic regression — meaning out of 100 applicants predicted at 20% risk, exactly 20 historically defaulted.',
   },
@@ -21,15 +21,15 @@ const FAQS = [
   {
     question: 'Are the SHAP explainability outputs compliant with ECOA and FCRA regulations?',
     answer:
-      'Yes. The Equal Credit Opportunity Act (ECOA) and Fair Credit Reporting Act (FCRA) mandate that adverse lending decisions must be accompanied by key principal reason codes. Nimbus computes exact TreeSHAP values for each inference, identifying the top factors that negatively influenced the score for automated adverse action notice generation.',
+      'Yes. The Equal Credit Opportunity Act (ECOA) and Fair Credit Reporting Act (FCRA) mandate that adverse lending decisions must be accompanied by key principal reason codes. LoanLens computes exact TreeSHAP values for each inference, identifying the top factors that negatively influenced the score for automated adverse action notice generation.',
   },
   {
     question: 'Can underwriters override an automated prediction?',
     answer:
-      'Absolutely. Nimbus operates as an underwriter decision support intelligence layer, not an autonomous gatekeeper. Underwriters can review the SHAP attribution chart, inspect raw financial documents, and approve conditional exceptions in accordance with internal bank credit policy.',
+      'Absolutely. LoanLens operates as an underwriter decision support intelligence layer, not an autonomous gatekeeper. Underwriters can review the SHAP attribution chart, inspect raw financial documents, and approve conditional exceptions in accordance with internal bank credit policy.',
   },
   {
-    question: 'How does Nimbus prevent algorithmic bias and demographic drift?',
+    question: 'How does LoanLens prevent algorithmic bias and demographic drift?',
     answer:
       'The model excludes protected demographic attributes (race, gender, marital status, zip code proxies). Furthermore, automated weekly bias audits monitor disparate impact ratios, while continuous population stability index (PSI) tracking alerts the team if applicant distributions shift.',
   },
