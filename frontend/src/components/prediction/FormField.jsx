@@ -12,7 +12,7 @@ export default function FormField({ label, error, children }) {
 
 export function baseInputClasses(hasError) {
   return cn(
-    'w-full rounded-xl border bg-white/60 px-3.5 py-2.5 text-sm text-ink-900 outline-none transition-colors placeholder:text-ink-700/30 focus:border-violet-400 dark:bg-white/5 dark:text-white dark:placeholder:text-white/25',
+    'min-h-11 w-full rounded-xl border bg-white/60 px-3.5 py-2.5 text-sm text-ink-900 outline-none transition-all placeholder:text-ink-700/30 focus:border-violet-400 focus:ring-4 focus:ring-violet-500/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/25',
     hasError ? 'border-risk-high/60' : 'border-ink-900/10 dark:border-white/10',
   );
 }

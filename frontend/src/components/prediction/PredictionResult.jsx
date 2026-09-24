@@ -17,7 +17,7 @@ export default function PredictionResult({ result, onReset }) {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="glass glass-border-gradient rounded-4xl p-6 sm:p-8"
+      className="glass glass-border-gradient rounded-3xl p-4 sm:rounded-4xl sm:p-8"
     >
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[auto,1fr] lg:items-center">
         <RiskIndicator probability={probability} />
@@ -81,12 +81,12 @@ export default function PredictionResult({ result, onReset }) {
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.15 + i * 0.08 }}
-                    className="flex items-center gap-3"
+                    className="flex flex-wrap items-center gap-x-3 gap-y-1.5"
                   >
-                    <span className="w-44 shrink-0 text-xs text-ink-700/70 dark:text-white/55">
+                    <span className="min-w-0 flex-1 text-xs text-ink-700/70 dark:text-white/55 sm:w-44 sm:flex-none">
                       {c.feature}
                     </span>
-                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink-900/[0.08] dark:bg-white/[0.08]">
+                    <div className="order-3 h-2 w-full overflow-hidden rounded-full bg-ink-900/[0.08] dark:bg-white/[0.08] sm:order-none sm:flex-1">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${Math.max(width, 6)}%` }}
@@ -94,7 +94,7 @@ export default function PredictionResult({ result, onReset }) {
                         className={isPositive ? 'h-full rounded-full bg-rose-500' : 'h-full rounded-full bg-emerald-500'}
                       />
                     </div>
-                    <span className="flex w-20 shrink-0 items-center justify-end gap-1 text-xs font-medium">
+                    <span className="flex w-auto shrink-0 items-center justify-end gap-1 text-xs font-medium sm:w-20">
                       {isPositive ? (
                         <TrendingUp className="h-3.5 w-3.5 text-rose-500" />
                       ) : (
