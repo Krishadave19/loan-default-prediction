@@ -80,17 +80,28 @@ def build_preprocessor() -> ColumnTransformer:
 
 
 def evaluate(name, model, X_test, y_test) -> dict:
+    from sklearn.metrics import confusion_matrix
     y_pred = model.predict(X_test)
+    cm = confusion_matrix(y_test, y_pred).tolist()
     metrics = {
         "model": name,
-        "accuracy": accuracy_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred, zero_division=0),
-        "recall": recall_score(y_test, y_pred, zero_division=0),
-        "f1_score": f1_score(y_test, y_pred, zero_division=0),
+        "accuracy": round(float(accuracy_score(y_test, y_pred)), 4),
+        "precision": round(float(precision_score(y_test, y_pred, average="weighted", zero_division=0)), 4),
+        "recall": round(float(recall_score(y_test, y_pred, average="weighted", zero_division=0)), 4),
+        "f1_score": round(float(f1_score(y_test, y_pred, average="weighted", zero_division=0)), 4),
+        "f1_weighted": round(float(f1_score(y_test, y_pred, average="weighted", zero_division=0)), 4),
+        "f1_macro": round(float(f1_score(y_test, y_pred, average="macro", zero_division=0)), 4),
+        "precision0": round(float(precision_score(y_test, y_pred, pos_label=0, zero_division=0)), 4),
+        "recall0": round(float(recall_score(y_test, y_pred, pos_label=0, zero_division=0)), 4),
+        "f1_0": round(float(f1_score(y_test, y_pred, pos_label=0, zero_division=0)), 4),
+        "precision1": round(float(precision_score(y_test, y_pred, pos_label=1, zero_division=0)), 4),
+        "recall1": round(float(recall_score(y_test, y_pred, pos_label=1, zero_division=0)), 4),
+        "f1_1": round(float(f1_score(y_test, y_pred, pos_label=1, zero_division=0)), 4),
+        "confusion_matrix": cm,
     }
     if hasattr(model, "predict_proba"):
         proba = model.predict_proba(X_test)[:, 1]
-        metrics["roc_auc"] = roc_auc_score(y_test, proba)
+        metrics["roc_auc"] = round(float(roc_auc_score(y_test, proba)), 4)
     return metrics
 
 

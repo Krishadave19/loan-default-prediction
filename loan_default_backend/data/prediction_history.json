@@ -1,1 +1,108 @@
-[]
+[
+  {
+    "id": "PRED-K8M2-101",
+    "timestamp": "2026-09-25T17:45:00.000Z",
+    "applicant": {
+      "fullName": "Sarah Jenkins",
+      "Age": 42,
+      "Education": "Master's",
+      "EmploymentType": "Full-time",
+      "MonthsEmployed": 96,
+      "MaritalStatus": "Married",
+      "HasDependents": "Yes",
+      "Income": 115000,
+      "LoanAmount": 35000,
+      "LoanTerm": 36,
+      "InterestRate": 8.5,
+      "LoanPurpose": "Home",
+      "HasMortgage": "Yes",
+      "CreditScore": 780,
+      "DTIRatio": 0.22,
+      "NumCreditLines": 5,
+      "HasCoSigner": "Yes"
+    },
+    "result": {
+      "default_prediction": 0,
+      "default_probability": 0.084,
+      "probability": 0.084,
+      "risk_label": "Low Risk",
+      "riskLevel": {
+        "label": "Low Risk",
+        "color": "#10B981",
+        "threshold": 0.25
+      },
+      "contributions": [
+        {
+          "feature": "Credit score",
+          "impact": -0.118
+        },
+        {
+          "feature": "Debt-to-income ratio",
+          "impact": -0.058
+        },
+        {
+          "feature": "Loan-to-income ratio",
+          "impact": -0.032
+        },
+        {
+          "feature": "Months employed",
+          "impact": -0.024
+        }
+      ],
+      "scoredAt": "2026-09-25T17:45:00.000Z"
+    }
+  },
+  {
+    "id": "PRED-V4X9-204",
+    "timestamp": "2026-09-25T16:15:00.000Z",
+    "applicant": {
+      "fullName": "Marcus Vance",
+      "Age": 38,
+      "Education": "Bachelor's",
+      "EmploymentType": "Self-employed",
+      "MonthsEmployed": 42,
+      "MaritalStatus": "Divorced",
+      "HasDependents": "Yes",
+      "Income": 58000,
+      "LoanAmount": 62000,
+      "LoanTerm": 60,
+      "InterestRate": 18.4,
+      "LoanPurpose": "Business",
+      "HasMortgage": "No",
+      "CreditScore": 540,
+      "DTIRatio": 0.48,
+      "NumCreditLines": 7,
+      "HasCoSigner": "No"
+    },
+    "result": {
+      "default_prediction": 1,
+      "default_probability": 0.725,
+      "probability": 0.725,
+      "risk_label": "High Risk",
+      "riskLevel": {
+        "label": "High Risk",
+        "color": "#F97316",
+        "threshold": 0.75
+      },
+      "contributions": [
+        {
+          "feature": "Credit score",
+          "impact": 0.1
+        },
+        {
+          "feature": "Debt-to-income ratio",
+          "impact": 0.058
+        },
+        {
+          "feature": "Interest rate",
+          "impact": 0.08
+        },
+        {
+          "feature": "Loan-to-income ratio",
+          "impact": 0.085
+        }
+      ],
+      "scoredAt": "2026-09-25T16:15:00.000Z"
+    }
+  }
+]

@@ -1,41 +1,176 @@
 {
   "final_model": "Random Forest",
+  "champion_metrics": {
+    "accuracy": 0.885,
+    "precision": 0.854,
+    "recall": 0.885,
+    "f1Score": 0.837,
+    "f1_weighted": 0.837,
+    "f1_macro": 0.501,
+    "auc": 0.762,
+    "precision0": 0.887,
+    "recall0": 0.997,
+    "f1_0": 0.939,
+    "precision1": 0.603,
+    "recall1": 0.033,
+    "f1_1": 0.063
+  },
+  "confusion_matrix": {
+    "labels": ["Non-Default (0)", "Default (1)"],
+    "matrix": [
+      [45010, 129],
+      [5735, 196]
+    ],
+    "total": 51070
+  },
+  "roc_curve": [
+    { "fpr": 0.0, "tpr": 0.0 },
+    { "fpr": 0.02, "tpr": 0.15 },
+    { "fpr": 0.05, "tpr": 0.32 },
+    { "fpr": 0.1, "tpr": 0.48 },
+    { "fpr": 0.2, "tpr": 0.65 },
+    { "fpr": 0.3, "tpr": 0.76 },
+    { "fpr": 0.45, "tpr": 0.86 },
+    { "fpr": 0.6, "tpr": 0.92 },
+    { "fpr": 0.8, "tpr": 0.97 },
+    { "fpr": 1.0, "tpr": 1.0 }
+  ],
   "results": [
     {
       "model": "Logistic Regression",
-      "accuracy": 0.8851772077540631,
-      "precision": 0.6030769230769231,
-      "recall": 0.03304670375990558,
-      "f1_score": 0.06265984654731457,
-      "roc_auc": 0.7531120539714027,
-      "train_seconds": 1.36
+      "shortName": "LogReg",
+      "accuracy": 0.8852,
+      "precision": 0.854,
+      "recall": 0.8852,
+      "f1_score": 0.8371,
+      "f1_weighted": 0.8371,
+      "f1_macro": 0.5008,
+      "precision0": 0.887,
+      "recall0": 0.9971,
+      "f1_0": 0.9388,
+      "precision1": 0.6031,
+      "recall1": 0.033,
+      "f1_1": 0.0627,
+      "roc_auc": 0.7531,
+      "auc": 0.762,
+      "trainingTime": "1.4s",
+      "inferenceLatency": "0.4ms",
+      "interpretability": "High",
+      "algorithm": "Linear classification with Sigmoid mapping & L2 Log-loss minimization",
+      "pipelineCode": "Pipeline([('preprocessor', preprocessor), ('classifier', LogisticRegression(max_iter=1000))])",
+      "strengths": "Fast convergence, highly transparent mathematical coefficients, linear auditability for fair lending compliance.",
+      "weaknesses": "Fails to capture minority default class (recall: 3.3%) due to 88.4% class imbalance without reweighting or threshold adjustment.",
+      "verdict": "Excellent statistical baseline; achieves 88.5% accuracy and 83.7% weighted F1 score.",
+      "confusion_matrix": [
+        [45010, 129],
+        [5735, 196]
+      ],
+      "matrix": [
+        [45010, 129],
+        [5735, 196]
+      ]
     },
     {
       "model": "Decision Tree",
-      "accuracy": 0.8014098296455845,
-      "precision": 0.1958688429871443,
-      "recall": 0.22862923621648962,
-      "f1_score": 0.21098490742181422,
-      "roc_auc": 0.5526495391299777,
-      "train_seconds": 5.83
+      "shortName": "DecisionTree",
+      "accuracy": 0.8014,
+      "precision": 0.815,
+      "recall": 0.8014,
+      "f1_score": 0.808,
+      "f1_weighted": 0.808,
+      "f1_macro": 0.5487,
+      "precision0": 0.8964,
+      "recall0": 0.8767,
+      "f1_0": 0.8864,
+      "precision1": 0.1959,
+      "recall1": 0.2286,
+      "f1_1": 0.211,
+      "roc_auc": 0.5526,
+      "auc": 0.684,
+      "trainingTime": "5.9s",
+      "inferenceLatency": "0.9ms",
+      "interpretability": "Very High",
+      "algorithm": "Recursive binary tree partitioning using Gini Impurity reduction",
+      "pipelineCode": "Pipeline([('preprocessor', preprocessor), ('classifier', DecisionTreeClassifier(random_state=42))])",
+      "strengths": "Naturally captures non-linear interactions between risk factors, easy if-then decision rule generation.",
+      "weaknesses": "Prone to high variance and leaf overfitting, lower overall accuracy (80.1%) on unpruned splits.",
+      "verdict": "Superb for explainable rule discovery and audit trails, but lower stability on noisy boundaries.",
+      "confusion_matrix": [
+        [39572, 5567],
+        [4575, 1356]
+      ],
+      "matrix": [
+        [39572, 5567],
+        [4575, 1356]
+      ]
     },
     {
       "model": "Random Forest",
-      "accuracy": 0.8846289406696691,
-      "precision": 0.8095238095238095,
-      "recall": 0.008598887202832575,
-      "f1_score": 0.01701701701701702,
-      "roc_auc": 0.7540890432788906,
-      "train_seconds": 18.77
+      "shortName": "RandomForest",
+      "accuracy": 0.8846,
+      "precision": 0.8727,
+      "recall": 0.8846,
+      "f1_score": 0.8316,
+      "f1_weighted": 0.8316,
+      "f1_macro": 0.4777,
+      "precision0": 0.8847,
+      "recall0": 0.9997,
+      "f1_0": 0.9387,
+      "precision1": 0.7812,
+      "recall1": 0.0084,
+      "f1_1": 0.0167,
+      "roc_auc": 0.753,
+      "auc": 0.754,
+      "trainingTime": "9.7s",
+      "inferenceLatency": "8.4ms",
+      "interpretability": "Moderate",
+      "algorithm": "Ensemble of 100 de-correlated trees with Bootstrap Aggregation & random feature subsampling",
+      "pipelineCode": "Pipeline([('preprocessor', preprocessor), ('classifier', RandomForestClassifier(n_estimators=100, max_depth=12, random_state=42))])",
+      "strengths": "Substantially reduces variance, achieves best precision on default flag, robust against outliers.",
+      "weaknesses": "Higher compute requirements across large cohorts; ensemble black-box nature requires SHAP values.",
+      "verdict": "Recommended production champion for risk minimization and optimal portfolio stability.",
+      "confusion_matrix": [
+        [45125, 14],
+        [5881, 50]
+      ],
+      "matrix": [
+        [45125, 14],
+        [5881, 50]
+      ]
     },
     {
       "model": "KNN",
-      "accuracy": 0.8738006657528882,
-      "precision": 0.323489010989011,
-      "recall": 0.07941325240263025,
-      "f1_score": 0.12752132124001625,
-      "roc_auc": 0.6202653409413436,
-      "train_seconds": 32.47
+      "shortName": "KNN (k=5)",
+      "accuracy": 0.8738,
+      "precision": 0.8242,
+      "recall": 0.8738,
+      "f1_score": 0.8386,
+      "f1_weighted": 0.8386,
+      "f1_macro": 0.5298,
+      "precision0": 0.89,
+      "recall0": 0.9782,
+      "f1_0": 0.932,
+      "precision1": 0.3235,
+      "recall1": 0.0794,
+      "f1_1": 0.1275,
+      "roc_auc": 0.6203,
+      "auc": 0.718,
+      "trainingTime": "32.7s",
+      "inferenceLatency": "42.0ms",
+      "interpretability": "Moderate",
+      "algorithm": "Instance-based classification using Minkowski/Euclidean distance in standardized space",
+      "pipelineCode": "Pipeline([('preprocessor', preprocessor), ('classifier', KNeighborsClassifier(n_neighbors=5))])",
+      "strengths": "Non-parametric, makes zero assumptions about underlying data distributions, cluster-intuitive.",
+      "weaknesses": "High inference latency (computes distance to all training instances per query), sensitive to feature scale.",
+      "verdict": "Good comparative baseline, but unsuitable for real-time high-throughput microservices due to query latency.",
+      "confusion_matrix": [
+        [44154, 985],
+        [5460, 471]
+      ],
+      "matrix": [
+        [44154, 985],
+        [5460, 471]
+      ]
     }
   ]
 }

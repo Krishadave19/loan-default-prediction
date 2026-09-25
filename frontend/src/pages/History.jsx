@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -12,6 +12,7 @@ import {
   FileSpreadsheet,
   RotateCcw,
   ArrowUpDown,
+  RefreshCw,
 } from 'lucide-react';
 import DashboardLayout from '../layouts/DashboardLayout';
 import HistoryStats from '../components/history/HistoryStats';
@@ -24,10 +25,20 @@ export default function History() {
   const {
     history = [],
     isHistoryLoading,
+    refreshHistory,
     removeRecord,
     clearHistoryRecords,
     loadSampleHistory,
   } = usePredictionContext();
+
+  // Automatically refresh history on mount and poll every 12 seconds so predictions by other users appear live
+  useEffect(() => {
+    refreshHistory();
+    const interval = setInterval(() => {
+      refreshHistory();
+    }, 12000);
+    return () => clearInterval(interval);
+  }, [refreshHistory]);
 
   const [search, setSearch] = useState('');
   const [riskFilter, setRiskFilter] = useState('all');
@@ -128,6 +139,16 @@ export default function History() {
               <PlusCircle className="h-3.5 w-3.5" />
               New Prediction
             </Link>
+
+            <button
+              onClick={() => refreshHistory()}
+              disabled={isHistoryLoading}
+              className="inline-flex items-center gap-1.5 rounded-full border border-violet-500/20 bg-violet-500/10 px-3.5 py-2 text-xs font-semibold text-violet-600 transition-colors hover:bg-violet-500/20 dark:text-violet-300"
+              title="Sync latest prediction records from backend across all users"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${isHistoryLoading ? 'animate-spin' : ''}`} />
+              {isHistoryLoading ? 'Syncing...' : 'Sync Live'}
+            </button>
 
             <button
               onClick={() => exportToCSV(filteredRecords)}

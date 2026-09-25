@@ -1,12 +1,26 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { modelMetrics } from '../../data/modelInfo';
+import { modelMetrics as defaultMetrics } from '../../data/modelInfo';
+import { fetchModelInfo } from '../../services/modelService';
 import { formatPercent } from '../../utils/formatters';
 
 const RADIUS = 54;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 export default function ModelAccuracy() {
-  const accuracy = modelMetrics.accuracy;
+  const [metrics, setMetrics] = useState(defaultMetrics);
+  const [modelName, setModelName] = useState('Random Forest');
+
+  useEffect(() => {
+    fetchModelInfo().then((res) => {
+      if (res && res.modelMetrics) {
+        setMetrics(res.modelMetrics);
+        if (res.model_name) setModelName(res.model_name);
+      }
+    });
+  }, []);
+
+  const accuracy = metrics.accuracy;
 
   return (
     <motion.div
@@ -17,7 +31,7 @@ export default function ModelAccuracy() {
       className="glass glass-border-gradient flex flex-col items-center rounded-3xl p-6 text-center"
     >
       <h3 className="self-start text-sm font-semibold text-ink-900 dark:text-white">Model accuracy</h3>
-      <p className="self-start text-xs text-ink-700/50 dark:text-white/40">XGBoost · production</p>
+      <p className="self-start text-xs text-ink-700/50 dark:text-white/40">{modelName} · production</p>
 
       <div className="relative mt-4 h-36 w-36">
         <svg viewBox="0 0 120 120" className="h-full w-full -rotate-90">
@@ -55,25 +69,25 @@ export default function ModelAccuracy() {
         <div>
           <p className="text-[11px] text-ink-700/50 dark:text-white/40">Precision</p>
           <p className="text-sm font-semibold text-ink-900 dark:text-white">
-            {formatPercent(modelMetrics.precision, 1)}
+            {formatPercent(metrics.precision, 1)}
           </p>
         </div>
         <div>
           <p className="text-[11px] text-ink-700/50 dark:text-white/40">Recall</p>
           <p className="text-sm font-semibold text-ink-900 dark:text-white">
-            {formatPercent(modelMetrics.recall, 1)}
+            {formatPercent(metrics.recall, 1)}
           </p>
         </div>
         <div>
           <p className="text-[11px] text-ink-700/50 dark:text-white/40">F1 score</p>
           <p className="text-sm font-semibold text-ink-900 dark:text-white">
-            {formatPercent(modelMetrics.f1Score, 1)}
+            {formatPercent(metrics.f1Score, 1)}
           </p>
         </div>
         <div>
           <p className="text-[11px] text-ink-700/50 dark:text-white/40">AUC</p>
           <p className="text-sm font-semibold text-ink-900 dark:text-white">
-            {formatPercent(modelMetrics.auc, 1)}
+            {formatPercent(metrics.auc, 1)}
           </p>
         </div>
       </div>

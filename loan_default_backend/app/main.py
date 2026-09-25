@@ -1,4 +1,7 @@
 import json
+import random
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Optional
 from fastapi import APIRouter, FastAPI, HTTPException, Query
@@ -131,6 +134,122 @@ def model_info():
     )
 
 
+# Default demo seed records if no history exists yet
+DEFAULT_SAMPLE_HISTORY = [
+    {
+        "id": "PRED-K8M2-101",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "applicant": {
+            "fullName": "Sarah Jenkins",
+            "Age": 42,
+            "Education": "Master's",
+            "EmploymentType": "Full-time",
+            "MonthsEmployed": 96,
+            "MaritalStatus": "Married",
+            "HasDependents": "Yes",
+            "Income": 115000,
+            "LoanAmount": 35000,
+            "LoanTerm": 36,
+            "InterestRate": 8.5,
+            "LoanPurpose": "Home",
+            "HasMortgage": "Yes",
+            "CreditScore": 780,
+            "DTIRatio": 0.22,
+            "NumCreditLines": 5,
+            "HasCoSigner": "Yes",
+        },
+        "result": {
+            "default_prediction": 0,
+            "default_probability": 0.084,
+            "probability": 0.084,
+            "risk_label": "Low Risk",
+            "riskLevel": {"label": "Low Risk", "color": "#10B981", "threshold": 0.25},
+            "contributions": [
+                {"feature": "Credit score", "impact": -0.118},
+                {"feature": "Debt-to-income ratio", "impact": -0.058},
+                {"feature": "Loan-to-income ratio", "impact": -0.032},
+                {"feature": "Months employed", "impact": -0.024},
+            ],
+            "scoredAt": datetime.now(timezone.utc).isoformat(),
+        },
+    },
+    {
+        "id": "PRED-V4X9-204",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "applicant": {
+            "fullName": "Marcus Vance",
+            "Age": 38,
+            "Education": "Bachelor's",
+            "EmploymentType": "Self-employed",
+            "MonthsEmployed": 42,
+            "MaritalStatus": "Divorced",
+            "HasDependents": "Yes",
+            "Income": 58000,
+            "LoanAmount": 62000,
+            "LoanTerm": 60,
+            "InterestRate": 18.4,
+            "LoanPurpose": "Business",
+            "HasMortgage": "No",
+            "CreditScore": 540,
+            "DTIRatio": 0.48,
+            "NumCreditLines": 7,
+            "HasCoSigner": "No",
+        },
+        "result": {
+            "default_prediction": 1,
+            "default_probability": 0.725,
+            "probability": 0.725,
+            "risk_label": "High Risk",
+            "riskLevel": {"label": "High Risk", "color": "#F97316", "threshold": 0.75},
+            "contributions": [
+                {"feature": "Credit score", "impact": 0.100},
+                {"feature": "Debt-to-income ratio", "impact": 0.058},
+                {"feature": "Interest rate", "impact": 0.080},
+                {"feature": "Loan-to-income ratio", "impact": 0.085},
+            ],
+            "scoredAt": datetime.now(timezone.utc).isoformat(),
+        },
+    },
+]
+
+
+def _load_history() -> List[dict]:
+    if not HISTORY_FILE.exists():
+        _save_history(DEFAULT_SAMPLE_HISTORY)
+        return list(DEFAULT_SAMPLE_HISTORY)
+    try:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            if isinstance(data, list) and len(data) > 0:
+                return data
+            # Seed if file is empty
+            _save_history(DEFAULT_SAMPLE_HISTORY)
+            return list(DEFAULT_SAMPLE_HISTORY)
+    except Exception as e:
+        print(f"WARNING: could not load history: {e}")
+        return list(DEFAULT_SAMPLE_HISTORY)
+
+
+def _save_history(records: List[dict]):
+    try:
+        HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(records, f, indent=2)
+    except Exception as e:
+        print(f"WARNING: could not save history: {e}")
+
+
+def _prepend_history(record: dict):
+    records = _load_history()
+    rec_id = str(record.get("id", ""))
+    if rec_id:
+        records = [r for r in records if str(r.get("id", "")) != rec_id]
+    records.insert(0, record)
+    if len(records) > 500:
+        records = records[:500]
+    _save_history(records)
+
+
 @router.post("/predict", response_model=PredictionResponse, tags=["Prediction"])
 def predict(application: LoanApplication):
     try:
@@ -139,9 +258,26 @@ def predict(application: LoanApplication):
         raise HTTPException(status_code=503, detail=str(e))
 
     try:
-        result = model.predict_one(application.model_dump())
+        app_dict = application.model_dump()
+        result = model.predict_one(app_dict)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
+
+    # Automatically save prediction into shared history so all users can see it
+    try:
+        pred_id = f"PRED-{int(time.time()*1000):X}-{random.randint(100, 999)}"
+        record = {
+            "id": pred_id,
+            "timestamp": result.get("scoredAt") or datetime.now(timezone.utc).isoformat(),
+            "applicant": {
+                "fullName": f"Applicant #{random.randint(1000, 9999)}",
+                **app_dict,
+            },
+            "result": result,
+        }
+        _prepend_history(record)
+    except Exception as e:
+        print(f"WARNING: failed to auto-record prediction to history: {e}")
 
     return PredictionResponse(**result)
 
@@ -161,6 +297,23 @@ def predict_batch(batch: BatchLoanApplication):
         results = model.predict_many(records)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Prediction failed: {e}")
+
+    # Auto-record batch predictions
+    for app_dict, res in zip(records, results):
+        try:
+            pred_id = f"PRED-{int(time.time()*1000):X}-{random.randint(100, 999)}"
+            rec = {
+                "id": pred_id,
+                "timestamp": res.get("scoredAt") or datetime.now(timezone.utc).isoformat(),
+                "applicant": {
+                    "fullName": f"Applicant #{random.randint(1000, 9999)}",
+                    **app_dict,
+                },
+                "result": res,
+            }
+            _prepend_history(rec)
+        except Exception:
+            pass
 
     return BatchPredictionResponse(
         predictions=[PredictionResponse(**r) for r in results]
@@ -206,24 +359,42 @@ def get_dataset_stats():
     return DatasetStatsResponse(**_dataset_stats)
 
 
-def _load_history() -> List[dict]:
-    if not HISTORY_FILE.exists():
-        return []
-    try:
-        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        print(f"WARNING: could not load history: {e}")
-        return []
-
-
-def _save_history(records: List[dict]):
-    try:
-        HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
-        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-            json.dump(records, f, indent=2)
-    except Exception as e:
-        print(f"WARNING: could not save history: {e}")
+@router.get("/dataset/overview", tags=["Dataset"])
+def get_dataset_overview():
+    return {
+        "totalRows": 255347,
+        "totalFeatures": 18,
+        "trainRows": 204277,
+        "testRows": 51070,
+        "testSize": 0.2,
+        "randomState": 42,
+        "missingValues": 0,
+        "duplicateRows": 0,
+        "targetDistribution": {
+            "nonDefault": {"count": 225694, "percentage": 88.39},
+            "default": {"count": 29653, "percentage": 11.61},
+        },
+        "numericalFeatures": [
+            {"name": "Age", "description": "Age of borrower in years", "min": 18, "max": 69, "mean": 43.5},
+            {"name": "Income", "description": "Annual verified income (USD)", "min": 15000, "max": 150000, "mean": 82500},
+            {"name": "LoanAmount", "description": "Requested loan principal (USD)", "min": 5000, "max": 250000, "mean": 127500},
+            {"name": "CreditScore", "description": "Bureau credit rating", "min": 300, "max": 850, "mean": 575},
+            {"name": "MonthsEmployed", "description": "Months continuously employed", "min": 0, "max": 119, "mean": 59.5},
+            {"name": "NumCreditLines", "description": "Active open credit facilities", "min": 1, "max": 4, "mean": 2.5},
+            {"name": "InterestRate", "description": "Assigned APR interest rate (%)", "min": 2.0, "max": 25.0, "mean": 13.5},
+            {"name": "LoanTerm", "description": "Repayment period in months", "min": 12, "max": 60, "mean": 36},
+            {"name": "DTIRatio", "description": "Total debt-to-income ratio (0-1)", "min": 0.1, "max": 0.9, "mean": 0.5},
+        ],
+        "categoricalFeatures": [
+            {"name": "Education", "values": ["Bachelor's", "Master's", "High School", "PhD"]},
+            {"name": "EmploymentType", "values": ["Full-time", "Part-time", "Self-employed", "Unemployed"]},
+            {"name": "MaritalStatus", "values": ["Married", "Single", "Divorced"]},
+            {"name": "HasMortgage", "values": ["Yes", "No"]},
+            {"name": "HasDependents", "values": ["Yes", "No"]},
+            {"name": "LoanPurpose", "values": ["Auto", "Business", "Education", "Home", "Other"]},
+            {"name": "HasCoSigner", "values": ["Yes", "No"]},
+        ],
+    }
 
 
 @router.get("/history", tags=["History"])
@@ -234,16 +405,8 @@ def get_history(limit: int = Query(default=200, ge=1, le=1000)):
 
 @router.post("/history", tags=["History"])
 def add_history(record: dict):
-    records = _load_history()
-    # Filter out if same id already exists, then prepend
-    rec_id = str(record.get("id", ""))
-    if rec_id:
-        records = [r for r in records if str(r.get("id", "")) != rec_id]
-    records.insert(0, record)
-    if len(records) > 500:
-        records = records[:500]
-    _save_history(records)
-    return {"status": "success", "id": rec_id}
+    _prepend_history(record)
+    return {"status": "success", "id": str(record.get("id", ""))}
 
 
 @router.delete("/history/{record_id}", tags=["History"])

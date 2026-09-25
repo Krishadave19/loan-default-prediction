@@ -21,6 +21,21 @@ export function PredictionProvider({ children }) {
   const [history, setHistory] = useState(() => getLocalHistory());
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
 
+  const refreshHistory = useCallback(async () => {
+    setIsHistoryLoading(true);
+    try {
+      const records = await fetchHistory();
+      if (Array.isArray(records)) {
+        setHistory(records);
+      }
+      return records;
+    } catch (err) {
+      console.warn('History refresh error:', err);
+    } finally {
+      setIsHistoryLoading(false);
+    }
+  }, []);
+
   // Sync history on mount
   useEffect(() => {
     let mounted = true;
@@ -142,6 +157,7 @@ export function PredictionProvider({ children }) {
         reset,
         history,
         isHistoryLoading,
+        refreshHistory,
         removeRecord,
         clearHistoryRecords,
         loadSampleHistory,

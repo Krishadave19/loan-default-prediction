@@ -193,26 +193,36 @@ export async function fetchHistory() {
   const local = getLocalHistory();
   try {
     const remote = await api.get('/history');
-    if (Array.isArray(remote) && remote.length > 0) {
-      // Merge unique by id
-      const idMap = new Map();
-      // Remote records first
-      remote.forEach((r) => {
-        if (r && r.id) idMap.set(r.id, r);
-      });
-      // Local records that might not be synced yet
-      local.forEach((r) => {
-        if (r && r.id && !idMap.has(r.id)) idMap.set(r.id, r);
-      });
-      const merged = Array.from(idMap.values()).sort(
-        (a, b) => new Date(b.timestamp || b.result?.scoredAt || 0) - new Date(a.timestamp || a.result?.scoredAt || 0)
-      );
-      setLocalHistory(merged);
-      return merged;
+    if (Array.isArray(remote)) {
+      if (remote.length > 0) {
+        // Remote records are shared across all users
+        const idMap = new Map();
+        remote.forEach((r) => {
+          if (r && r.id) idMap.set(r.id, r);
+        });
+        // Merge any unsynced local records
+        local.forEach((r) => {
+          if (r && r.id && !idMap.has(r.id)) {
+            idMap.set(r.id, r);
+            // Sync this local record to backend asynchronously
+            api.post('/history', r).catch(() => {});
+          }
+        });
+        const merged = Array.from(idMap.values()).sort(
+          (a, b) => new Date(b.timestamp || b.result?.scoredAt || 0) - new Date(a.timestamp || a.result?.scoredAt || 0)
+        );
+        setLocalHistory(merged);
+        return merged;
+      } else if (local.length > 0) {
+        // Push local predictions to backend so all users can see them
+        for (const rec of local.slice(0, 10)) {
+          api.post('/history', rec).catch(() => {});
+        }
+        return local;
+      }
     }
   } catch (err) {
-    // Backend may be offline or not returning history; fallback to local
-    console.info('Backend /history not reached, using local history storage.');
+    console.info('Backend /history not reached, using local history storage:', err?.message);
   }
 
   return local;
