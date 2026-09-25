@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import List, Optional
 from fastapi import APIRouter, FastAPI, HTTPException, Query
@@ -18,6 +19,8 @@ from app.schemas import (
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_PATH = BASE_DIR / "data" / "Loan_default.csv"
+HISTORY_FILE = BASE_DIR / "data" / "prediction_history.json"
+
 
 app = FastAPI(
     title="Loan Default Prediction API",
@@ -203,6 +206,61 @@ def get_dataset_stats():
     return DatasetStatsResponse(**_dataset_stats)
 
 
+def _load_history() -> List[dict]:
+    if not HISTORY_FILE.exists():
+        return []
+    try:
+        with open(HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"WARNING: could not load history: {e}")
+        return []
+
+
+def _save_history(records: List[dict]):
+    try:
+        HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(HISTORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(records, f, indent=2)
+    except Exception as e:
+        print(f"WARNING: could not save history: {e}")
+
+
+@router.get("/history", tags=["History"])
+def get_history(limit: int = Query(default=200, ge=1, le=1000)):
+    records = _load_history()
+    return records[:limit]
+
+
+@router.post("/history", tags=["History"])
+def add_history(record: dict):
+    records = _load_history()
+    # Filter out if same id already exists, then prepend
+    rec_id = str(record.get("id", ""))
+    if rec_id:
+        records = [r for r in records if str(r.get("id", "")) != rec_id]
+    records.insert(0, record)
+    if len(records) > 500:
+        records = records[:500]
+    _save_history(records)
+    return {"status": "success", "id": rec_id}
+
+
+@router.delete("/history/{record_id}", tags=["History"])
+def delete_history_item(record_id: str):
+    records = _load_history()
+    new_records = [r for r in records if str(r.get("id")) != str(record_id)]
+    _save_history(new_records)
+    return {"status": "success", "deleted": record_id}
+
+
+@router.delete("/history", tags=["History"])
+def clear_history():
+    _save_history([])
+    return {"status": "success", "message": "History cleared"}
+
+
 # Include router under both root and /api prefixes
 app.include_router(router)
 app.include_router(router, prefix="/api")
+

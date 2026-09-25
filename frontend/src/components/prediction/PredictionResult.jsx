@@ -1,10 +1,22 @@
 import { motion } from 'framer-motion';
-import { TrendingDown, TrendingUp, RotateCcw, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  TrendingDown,
+  TrendingUp,
+  RotateCcw,
+  CheckCircle2,
+  AlertTriangle,
+  History,
+  ArrowRight,
+  BookmarkCheck,
+} from 'lucide-react';
 import RiskIndicator from './RiskIndicator';
 import ProbabilityBar from './ProbabilityBar';
 import { getRiskLevel } from '../../utils/constants';
+import { usePredictionContext } from '../../context/PredictionContext';
 
 export default function PredictionResult({ result, onReset }) {
+  const { latestRecord } = usePredictionContext();
   if (!result) return null;
 
   const probability = result.probability ?? result.default_probability ?? 0.05;
@@ -19,6 +31,25 @@ export default function PredictionResult({ result, onReset }) {
       transition={{ duration: 0.5 }}
       className="glass glass-border-gradient rounded-3xl p-4 sm:rounded-4xl sm:p-8"
     >
+      {/* Saved to History Notice Banner */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-violet-500/20 bg-violet-500/10 px-4 py-2.5 text-xs text-violet-700 dark:text-violet-300">
+        <div className="flex items-center gap-2">
+          <BookmarkCheck className="h-4 w-4 shrink-0 text-violet-500" />
+          <span>
+            Prediction saved to <strong>History</strong>
+            {latestRecord?.id && (
+              <span className="ml-1.5 font-mono text-[11px] opacity-80">({latestRecord.id})</span>
+            )}
+          </span>
+        </div>
+        <Link
+          to="/history"
+          className="inline-flex items-center gap-1 font-semibold hover:underline text-violet-600 dark:text-violet-300"
+        >
+          View all history <ArrowRight className="h-3 w-3" />
+        </Link>
+      </div>
+
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[auto,1fr] lg:items-center">
         <RiskIndicator probability={probability} />
 
@@ -112,13 +143,24 @@ export default function PredictionResult({ result, onReset }) {
         </div>
       )}
 
-      <button
-        onClick={onReset}
-        className="mt-8 inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 px-4 py-2 text-xs font-semibold text-ink-700 transition-colors hover:border-violet-400/50 hover:text-violet-500 dark:border-white/10 dark:text-white/70"
-      >
-        <RotateCcw className="h-3.5 w-3.5" />
-        Score another applicant
-      </button>
+      <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-ink-900/10 pt-5 dark:border-white/10">
+        <button
+          onClick={onReset}
+          className="inline-flex items-center gap-1.5 rounded-full border border-ink-900/10 px-4 py-2.5 text-xs font-semibold text-ink-700 transition-colors hover:border-violet-400/50 hover:text-violet-500 dark:border-white/10 dark:text-white/70"
+        >
+          <RotateCcw className="h-3.5 w-3.5" />
+          Score another applicant
+        </button>
+
+        <Link
+          to="/history"
+          className="inline-flex items-center gap-2 rounded-full bg-accent-gradient px-5 py-2.5 text-xs font-semibold text-white shadow-glow transition-transform hover:-translate-y-0.5"
+        >
+          <History className="h-3.5 w-3.5" />
+          View History Page
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
     </motion.div>
   );
 }

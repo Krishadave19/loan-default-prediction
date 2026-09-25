@@ -18,7 +18,7 @@ export const NAV_LINKS = [
   { to: '/model-comparison', label: 'Model Comparison' },
   { to: '/prediction', label: 'Predict' },
   { to: '/performance', label: 'Performance' },
-  { to: '/dataset', label: 'Dataset' },
+  { to: '/history', label: 'History' },
   { to: '/how-it-works', label: 'How it works' },
 ];
 

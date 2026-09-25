@@ -7,7 +7,7 @@ import ModelComparisonPage from '../pages/ModelComparisonPage';
 import Prediction from '../pages/Prediction';
 import HowItWorks from '../pages/HowItWorks';
 import Performance from '../pages/Performance';
-import Dataset from '../pages/Dataset';
+import History from '../pages/History';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
 import NotFound from '../pages/NotFound';
@@ -46,7 +46,8 @@ export default function AppRoutes() {
         <Route path="/prediction" element={<AnimatedPage><Prediction /></AnimatedPage>} />
         <Route path="/how-it-works" element={<AnimatedPage><HowItWorks /></AnimatedPage>} />
         <Route path="/performance" element={<AnimatedPage><Performance /></AnimatedPage>} />
-        <Route path="/dataset" element={<AnimatedPage><Dataset /></AnimatedPage>} />
+        <Route path="/history" element={<AnimatedPage><History /></AnimatedPage>} />
+        <Route path="/dataset" element={<Navigate to="/history" replace />} />
         <Route path="/about" element={<AnimatedPage><About /></AnimatedPage>} />
         <Route path="/contact" element={<AnimatedPage><Contact /></AnimatedPage>} />
         <Route path="*" element={<AnimatedPage><NotFound /></AnimatedPage>} />
